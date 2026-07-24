@@ -17,19 +17,19 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-# OAuth scopes, cut to read + drafts on this deployment. NOT the full
-# https://mail.google.com/ scope, and gmail.send is not requested: the server
-# never sends mail autonomously, it only creates drafts sent by hand
+# OAuth scopes on this deployment: read, drafts, and modify (labels/trash).
+# NOT the full https://mail.google.com/ scope, and gmail.send is not requested:
+# the server never sends mail autonomously, it only creates drafts sent by hand
 # (prompt-injection safety).
 #
-# gmail.modify and gmail.settings.basic are left out on purpose. They back
-# trash, bulk_action, modify_labels and the filter tools, each of which acts on
+# gmail.modify backs trash, bulk_action and modify_labels, each of which acts on
 # every match of a Gmail query — the real blast radius once an agent reads
-# untrusted mail. Without the scopes those calls fail at Google's API rather
-# than at the agent's discretion.
+# untrusted mail. gmail.settings.basic is left out on purpose, so the filter
+# tools fail at Google's API rather than at the agent's discretion.
 SCOPES: list[str] = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/gmail.compose",
+    "https://www.googleapis.com/auth/gmail.modify",
 ]
 
 _DEFAULT_DIR = Path.home() / ".gmail-mcp"
